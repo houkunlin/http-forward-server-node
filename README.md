@@ -220,6 +220,11 @@ COMMENT ON TABLE "public"."http_turn_config" IS 'NAS 短信、WebHooks通知请�
 说明：当前请求主机 <br/>
 示例：`localhost` 
 
+**method** <br/>
+类型：string <br/>
+说明：当前请求方法：GET/POST/PUT/DELETE <br/>
+示例：`GET` 
+
 **params** <br/>
 类型：object <br/>
 说明：当前请求的内置路由参数 <br/>
@@ -238,17 +243,12 @@ COMMENT ON TABLE "public"."http_turn_config" IS 'NAS 短信、WebHooks通知请�
 **headers** <br/>
 类型：object <br/>
 说明：当前请求头参数 <br/>
-示例：`3000` 
+示例：`{key1: 'test-key', key2: 'test-key'}` 
 
 **cookies** <br/>
 类型：object <br/>
 说明：当前请求 COOKIE 参数 <br/>
-示例：`3000` 
-
-**method** <br/>
-类型：string <br/>
-说明：当前请求方法：GET/POST/PUT/DELETE <br/>
-示例：`GET` 
+示例：`{key1: 'test-key', key2: 'test-key'}` 
 
 
 

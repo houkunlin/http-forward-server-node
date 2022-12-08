@@ -7,6 +7,7 @@ import { Repository } from "typeorm";
 import axios, { AxiosRequestConfig } from "axios";
 import middles from "./middle";
 import { renderObject } from "./utils";
+import { TplData } from "./app";
 
 const request = axios.create({});
 
@@ -24,7 +25,7 @@ export class AppController {
     // 获取关键的客户端请求数据
     const { path, ip, hostname, params, query, body, headers, cookies, method } = req;
     // 构建模板变量数据对象
-    const tplData = { path, ip, hostname, params, query, body, headers, cookies, method };
+    const tplData: TplData = { path, ip, hostname, params, query, body, headers, cookies, method };
     // 从数据库中查找转发配置信息
     const configs = await this.configRepository.findBy({ keyName: params["id"] });
     if (configs == null || configs.length === 0) {
