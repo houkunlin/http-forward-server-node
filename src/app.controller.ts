@@ -33,7 +33,9 @@ export class AppController {
     }
 
     for (const config of configs) {
-      this.handleForward(config, tplData);
+      this.handleForward(config, tplData).finally(() => {
+        console.log(`${config.id} - ${config.keyName} 处理完毕\n`);
+      });
     }
 
     return { code: 0, msg: "ok, already processing asynchronously" };
@@ -68,7 +70,7 @@ export class AppController {
       }
     }
 
-    request(reqConfig).then(res => {
+    return request(reqConfig).then(res => {
       console.log("接收请求参数", JSON.stringify(tplData, null, null));
       console.log("发起请求参数", JSON.stringify(reqConfig, null, null));
       console.log("发起请求结果", JSON.stringify(res.data, null, null));
