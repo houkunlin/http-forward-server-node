@@ -5,8 +5,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Config } from "./model/Config.entity";
 import { Repository } from "typeorm";
 import axios, { AxiosRequestConfig } from "axios";
-import * as artTemplate from "art-template";
 import middles from "./middle";
+import { renderObject } from "./utils";
 
 const request = axios.create({});
 
@@ -49,10 +49,10 @@ export class AppController {
     reqConfig.timeout = config.timeout;
 
     // 解析处理配置模板信息中的变量信息，把变量替换成具体的值
-    reqConfig.headers = this.parseObj(config.header, tplData);
-    reqConfig.params = this.parseObj(config.query, tplData);
-    reqConfig.data = this.parseObj(config.data, tplData);
-    reqConfig.auth = this.parseObj(config.auth, tplData);
+    reqConfig.headers = renderObject(config.header, tplData);
+    reqConfig.params = renderObject(config.query, tplData);
+    reqConfig.data = renderObject(config.data, tplData);
+    reqConfig.auth = renderObject(config.auth, tplData);
 
     // 中间件处理
     const middleKeys = Object.keys(config.middle || {});
@@ -62,7 +62,7 @@ export class AppController {
         if (fun) {
           // 处理中间件的数据处理
           const middleParams = config.middle[middleKey];
-          await fun(reqConfig, this.parseObj(middleParams, tplData));
+          await fun(reqConfig, renderObject(middleParams, tplData));
         }
       }
     }
@@ -77,59 +77,4 @@ export class AppController {
       console.error("发起请求出现错误", e.message, JSON.stringify(e.response?.data || {}, null, null));
     });
   }
-
-  /**
-   * 解析对象信息，对 对象 的模板内容进行处理
-   * @param data 对象内容
-   * @param tplData 模板变量数据
-   */
-  parseObj(data: any, tplData: any): any {
-    if (data == null) {
-      return data;
-    }
-    if (typeof data === "string") {
-      return this.renderText(data, tplData);
-    }
-    if (data instanceof Array || Array.isArray(data)) {
-      if (data.length === 0) {
-        return [];
-      }
-      const items = [];
-      for (const item of data) {
-        items.push(this.parseObj(item, tplData));
-      }
-      return items;
-    }
-
-    const dataKeys = Object.keys(data);
-    if (dataKeys.length === 0) {
-      return undefined;
-    }
-    const obj = {};
-    dataKeys.forEach((key) => {
-      const rawValue = data[key];
-      if (rawValue == null) {
-        obj[key] = null;
-      } else if (typeof rawValue === "string") {
-        obj[key] = this.renderText(rawValue, tplData);
-      } else if (typeof rawValue === "object") {
-        obj[key] = this.parseObj(rawValue, tplData);
-      } else {
-        obj[key] = rawValue;
-      }
-    });
-    return obj;
-  }
-
-  /**
-   * 解析模板
-   * @param tpl 模板内存
-   * @param tplData 模板变量数据
-   */
-  renderText(tpl: string, tplData: any) {
-    if (artTemplate == null) {
-      return tpl;
-    }
-    return artTemplate.render(tpl, tplData);
-  };
 }
