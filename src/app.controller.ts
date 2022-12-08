@@ -43,32 +43,29 @@ export class AppController {
    * @param config 配置信息
    * @param tplData 模板变量数据
    */
-  handleForward(config: Config, tplData: any) {
+  async handleForward(config: Config, tplData: any) {
     // 构建转发请求参数信息
     const reqConfig: AxiosRequestConfig = { method: config.method, url: config.url, responseType: config.responseType };
     reqConfig.timeout = config.timeout;
-
-    // 配置中间件
-    reqConfig.transformRequest = [(data, headers) => {
-      const middleKeys = Object.keys(config.middle || {});
-      if (middleKeys.length === 0) {
-        return data;
-      }
-      return middleKeys.reduce((obj, middleKey) => {
-        const fun = middles[middleKey];
-        // 处理中间件的数据处理
-        const middleParams = config.middle[middleKey];
-        return fun ? fun(obj, headers, this.parseObj(middleParams, tplData)) : obj;
-      }, data);
-    }, (data) => {
-      return typeof data === "string" ? data : JSON.stringify(data);
-    }];
 
     // 解析处理配置模板信息中的变量信息，把变量替换成具体的值
     reqConfig.headers = this.parseObj(config.header, tplData);
     reqConfig.params = this.parseObj(config.query, tplData);
     reqConfig.data = this.parseObj(config.data, tplData);
     reqConfig.auth = this.parseObj(config.auth, tplData);
+
+    // 中间件处理
+    const middleKeys = Object.keys(config.middle || {});
+    if (middleKeys.length > 0) {
+      for (const middleKey of middleKeys) {
+        const fun = middles[middleKey];
+        if (fun) {
+          // 处理中间件的数据处理
+          const middleParams = config.middle[middleKey];
+          await fun(reqConfig, this.parseObj(middleParams, tplData));
+        }
+      }
+    }
 
     request(reqConfig).then(res => {
       console.log("接收请求参数", JSON.stringify(tplData, null, null));

@@ -1,5 +1,6 @@
 import * as crypto from "crypto";
 import { BinaryToTextEncoding } from "crypto";
+import { AxiosRequestConfig } from "axios";
 
 function sha256(message: string, secret = "", encoding?: BinaryToTextEncoding) {
   const hmac = crypto.createHmac("sha256", secret);
@@ -21,8 +22,7 @@ function getDate(timestamp) {
 
 /**
  * 腾讯云服务器签名方法 V3 版本
- * @param data 请求体数据
- * @param headers 请求头内存
+ * @param config axios 请求配置参数对象
  * @param params 中间件所需要的参数信息 <pre>
  *   {
  *     "SecretId": "API 密钥 SecretId",
@@ -36,10 +36,16 @@ function getDate(timestamp) {
  * </pre>
  * @see https://cloud.tencent.com/document/api/213/30654
  */
-function TencentSignatureV3(data?: any, headers: any = {}, params?: any | any[]) {
+async function TencentSignatureV3(config: AxiosRequestConfig, params: any = {}) {
+  const { data } = config;
   if (data == null) {
-    return data;
+    return;
   }
+  const headers: any = config.headers || {};
+  if (config.headers == null) {
+    config.headers = headers;
+  }
+
   // 密钥参数，云API密匙查询: https://console.cloud.tencent.com/cam/capi
   const SECRET_ID = params.SecretId || "";
   const SECRET_KEY = params.SecretKey || "";
@@ -98,7 +104,6 @@ function TencentSignatureV3(data?: any, headers: any = {}, params?: any | any[])
   headers["X-TC-Region"] = region;
 
   /// console.log("腾讯签名请求参数", data, headers);
-  return data;
 }
 
 export default TencentSignatureV3;
