@@ -309,9 +309,16 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Docker 运行
+
+```bash
+docker push houkunlin/http-forward-server
+docker run -d -v /home/user/prod.env:/app/.env -p 3000:80 houkunlin/http-forward-server
+```
+
 ## 环境变量
 
-请在项目路径下增加一个环境变量配置文件 `.env` 内容格式如下，请按实际情况修改：
+请在项目路径下增加一个环境变量配置文件 `.env` 内容格式如下，Docker 容器的启动运行环境变量文件应该放在容器内 `/app/.env` 文件中，请按实际情况修改：
 
 ```
 DB_HOST=127.0.0.1
@@ -400,7 +407,7 @@ Error: connect ECONNREFUSED 127.0.0.1:5432
 
 ```
 
-我们需要在执行 `node` 命令的路径（请注意，是执行 `node` 命令的路径，而不是 `main.js` 所在路径）增加一个环境变量配置文件 `.env` 内容格式如下，请按实际情况修改：
+我们需要在执行 `node` 命令的路径（请注意，是执行 `node` 命令的路径，而不是 `main.js` 所在路径）增加一个环境变量配置文件 `.env` 内容格式如下，Docker 容器的启动运行环境变量文件应该放在容器内 `/app/.env` 文件中，请按实际情况修改：
 
 ```
 DB_HOST=127.0.0.1
