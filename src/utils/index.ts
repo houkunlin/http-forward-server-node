@@ -1,4 +1,7 @@
 import * as artTemplate from "art-template";
+import axios from "axios";
+
+export const request = axios.create({});
 
 /**
  * 解析模板

@@ -4,12 +4,10 @@ import { Request } from "express";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Config } from "./model/Config.entity";
 import { Repository } from "typeorm";
-import axios, { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig } from "axios";
 import middles from "./middle";
-import { renderObject } from "./utils";
+import { renderObject, request } from "./utils";
 import { TplData } from "./app";
-
-const request = axios.create({});
 
 @Controller()
 export class AppController {
