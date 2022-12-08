@@ -1,6 +1,7 @@
 import * as crypto from "crypto";
 import { BinaryToTextEncoding } from "crypto";
 import { AxiosRequestConfig } from "axios";
+import { TplData } from "../app";
 
 function sha256(message: string, secret = "", encoding?: BinaryToTextEncoding) {
   const hmac = crypto.createHmac("sha256", secret);
@@ -23,7 +24,8 @@ function getDate(timestamp) {
 /**
  * 腾讯云服务器签名方法 V3 版本
  * @param config axios 请求配置参数对象
- * @param params 中间件所需要的参数信息 <pre>
+ * @param tplData 当前请求的模板变量数据信息
+ * @param params 中间件所需要的参数信息，已经经过模板处理的结果 <pre>
  *   {
  *     "SecretId": "API 密钥 SecretId",
  *     "SecretKey": "API 密钥 SecretKey",
@@ -36,9 +38,9 @@ function getDate(timestamp) {
  * </pre>
  * @see https://cloud.tencent.com/document/api/213/30654
  */
-async function TencentSignatureV3(config: AxiosRequestConfig, params: any = {}) {
+async function TencentSignatureV3(config: AxiosRequestConfig, tplData: TplData, params: any = {}) {
   const { data } = config;
-  if (data == null) {
+  if (data == null || Object.keys(data).length === 0) {
     return;
   }
   const headers: any = config.headers || {};

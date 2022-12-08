@@ -65,7 +65,7 @@ export class AppController {
         if (fun) {
           // 处理中间件的数据处理
           const middleParams = config.middle[middleKey];
-          await fun(reqConfig, renderObject(middleParams, tplData));
+          await fun(reqConfig, tplData, renderObject(middleParams, tplData));
         }
       }
     }
