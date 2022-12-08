@@ -203,6 +203,21 @@ COMMENT ON TABLE "public"."http_turn_config" IS 'NAS 短信、WebHooks通知请�
 }
 ```
 
+**WorkWeixinGetToken**
+
+说明：企业微信服务端API，处理Token认证参数 <br/>
+相关地址：[企业微信服务端API：获取access_token](https://developer.work.weixin.qq.com/document/path/91039) <br/>
+中间件参数：
+
+```json
+{
+  "corpid": "企业ID，在【我的企业】中查看，一个企业只有一个ID",
+  "corpsecret": "应用的凭证密钥，从【企业应用】》【应用】》【自建】》在我的自建应用中查看 Secret，每个应用的 Secret 不同"
+}
+```
+
+
+
 ## 模板变量说明
 
 **path** <br/>
