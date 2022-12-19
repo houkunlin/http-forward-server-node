@@ -172,7 +172,18 @@ COMMENT ON TABLE "public"."http_turn_config" IS 'NAS 短信、WebHooks通知请�
 
 ## 中间件
 
-列出已支持的中间件信息
+中间件配置（`middle` 字段配置）示例如下：
+
+```json
+{
+    "MpWeixinGetToken":{
+        "appId": "xxx",
+        "appSecret": "xxx"
+    }
+}
+```
+
+下面列出已支持的中间件信息
 
 **TencentSignatureV3** <br/>
 说明：腾讯云签名方法 <br/>
@@ -213,6 +224,19 @@ COMMENT ON TABLE "public"."http_turn_config" IS 'NAS 短信、WebHooks通知请�
 {
   "corpid": "企业ID，在【我的企业】中查看，一个企业只有一个ID",
   "corpsecret": "应用的凭证密钥，从【企业应用】》【应用】》【自建】》在我的自建应用中查看 Secret，每个应用的 Secret 不同"
+}
+```
+
+**MpWeixinGetToken**
+
+说明：获取微信公众号 AccessToken <br/>
+相关地址：[微信公众号：获取Access token](https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html) <br/>
+中间件参数：
+
+```json
+{
+  "appId": "开发者ID(AppID)，在【微信公众号后台】》【基础配置】中查看，一个微信公众号只有一个ID",
+  "appSecret": "开发者密码(AppSecret)，在【微信公众号后台】》【基础配置】中查看，一个微信公众号只有一个Secret"
 }
 ```
 
@@ -296,7 +320,7 @@ INSERT INTO "public"."http_turn_config" ("id", "key_name", "middle", "url", "met
 }', 3000, NULL, 'json', NULL, NULL);
 -- 短信宝服务
 INSERT INTO "public"."http_turn_config" ("id", "key_name", "middle", "url", "method", "query", "data", "header", "timeout", "auth", "response_type", "create_time", "update_time") VALUES (3, 'smsbao-sms', NULL, 'https://api.smsbao.com/sms', 'GET', '{
-    "u":"houkunlin",
+    "u":"用户名",
     "p":"密钥",
     "m":"{{body.phone.substring(3)}}",
     "c":"【NAS】{{body.content}}"
